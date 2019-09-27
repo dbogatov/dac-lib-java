@@ -1,0 +1,12 @@
+stages:
+- test
+
+tests:
+  image: dbogatov/docker-sources:openjdk-14-jdk-alpine
+  stage: test
+  before_script:
+  - apk add --update bash
+  script:
+  - ./run.sh
+  tags:
+  - docker
