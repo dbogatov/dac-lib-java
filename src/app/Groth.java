@@ -1,4 +1,4 @@
-package main.java;
+package app;
 
 import org.apache.milagro.amcl.RAND;
 import org.apache.milagro.amcl.FP256BN.*;

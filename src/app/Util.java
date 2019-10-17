@@ -1,4 +1,4 @@
-package main.java;
+package app;
 
 import java.util.ArrayList;
 
@@ -278,12 +278,6 @@ public class Util {
 			return ECP2.generator().mul(a);
 		}
 
-	}
-
-	class eArg {
-		Object a;
-		Object b;
-		BIG c;
 	}
 
 	public static FP12 eProduct(eArg... args) {

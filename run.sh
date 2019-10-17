@@ -6,11 +6,11 @@ set -e
 cd "${0%/*}"
 CWD=$(pwd)
 
-DIRS="main/java"
+DIRS="app"
 
 rm -rf obj/*
 
 javac -d obj -cp "./lib/*" src/$DIRS/*.java test/$DIRS/*.java
 
 cd obj
-java -cp ".:../lib/*" org.junit.runner.JUnitCore main.java.CredentialsTest main.java.GrothTest
+java -cp ".:../lib/*" org.junit.runner.JUnitCore $DIRS.CredentialsTest $DIRS.GrothTest
