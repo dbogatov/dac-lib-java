@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 
 import org.apache.milagro.amcl.RAND;
+import org.apache.milagro.amcl.FP256BN.*;
 import org.junit.Test;
 
 public class CredentialsTest {
@@ -13,6 +14,8 @@ public class CredentialsTest {
 		Credentials creds;
 		KeyPair keys;
 		Object[][] ys;
+		ECP h;
+		BIG skNym;
 	}
 
 	static byte SEED = 0x13;
@@ -34,6 +37,8 @@ public class CredentialsTest {
 		chain.ys[0] = Groth.GenerateYs(false, YsNum, prg);
 		chain.ys[1] = Groth.GenerateYs(true, YsNum, prg);
 
+		chain.h = ECP.generator().mul(BIG.randomnum(new BIG(ROM.CURVE_Order), prg));
+
 		for (int index = 1; index <= L; index++) {
 			KeyPair iKyes = Credentials.GenerateKeys(prg, index);
 			String[] values = new String[n];
@@ -46,11 +51,13 @@ public class CredentialsTest {
 			chain.keys.sk = iKyes.sk;
 		}
 
+		chain.skNym = new BIG(1); // TODO implement nyms
+
 		return chain;
 	}
 
 	@Test(expected = Test.None.class)
-	public void happyPath() throws Exception {
+	public void happyPathVerify() throws Exception {
 
 		RAND prg = new RAND();
 
@@ -62,5 +69,22 @@ public class CredentialsTest {
 		Chain chain = generateChain(L, 3);
 
 		chain.creds.Verify(chain.keys.sk, chain.keys.pk, chain.ys);
+	}
+
+	@Test(expected = Test.None.class)
+	public void happyPathProve() throws Exception {
+
+		RAND prg = new RAND();
+
+		prg.clean();
+		prg.seed(1, new byte[] { SEED });
+
+		int L = 10;
+
+		Chain chain = generateChain(L, 3);
+
+		chain.creds.Prove(prg, chain.keys.sk, chain.keys.pk,
+				new Index[] { new Index(1, 1, chain.creds.attributes.get(1)[1]) }, "Message".getBytes(), chain.ys,
+				chain.h, chain.skNym);
 	}
 }

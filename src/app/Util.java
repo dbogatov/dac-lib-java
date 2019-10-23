@@ -1,6 +1,10 @@
 package app;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.nio.ByteBuffer;
 
 import org.apache.milagro.amcl.SHA3;
 import org.apache.milagro.amcl.FP256BN.*;
@@ -372,7 +376,7 @@ public class Util {
 		return pointEqual(first, second);
 	}
 
-	public static boolean VerifyKeyPair(BIG sk, Object pk) {
+	public static boolean verifyKeyPair(BIG sk, Object pk) {
 
 		Object target;
 		if (pk instanceof ECP) {
@@ -382,5 +386,35 @@ public class Util {
 		}
 		return pkEqual(pk, target);
 
+	}
+
+	public static byte[] hashIndices(Index[] indices) {
+		ByteArrayOutputStream raw = new ByteArrayOutputStream();
+
+		Index[] d = Arrays.copyOf(indices, indices.length);
+		Arrays.sort(d, new Comparator<Index>() {
+			@Override
+			public int compare(Index self, Index other) {
+				if (self.i < other.i || self.j < other.j) {
+					return 1;
+				} else if (self.i == other.i || self.j == other.j) {
+					return 0;
+				} else {
+					return -1;
+				}
+			}
+		});
+
+		try {
+			for (int i = 0; i < d.length; i++) {
+				raw.write(ByteBuffer.allocate(4).putInt(d[i].i).array());
+				raw.write(ByteBuffer.allocate(4).putInt(d[i].j).array());
+				raw.write(pointToBytes(d[i].attribute));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return raw.toByteArray();
 	}
 }
