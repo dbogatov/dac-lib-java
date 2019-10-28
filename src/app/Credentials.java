@@ -48,8 +48,7 @@ public class Credentials {
 
 		Groth groth = new Groth(prg, L % 2 == 1, grothYs[L % 2]);
 
-		GrothSignature sigma = groth.Sign(sk,
-				Stream.of(new Object[] { publicKey }, attributes).flatMap(Stream::of).toArray());
+		GrothSignature sigma = groth.Sign(sk, Stream.of(new Object[] { publicKey }, attributes).flatMap(Stream::of).toArray());
 
 		this.attributes.add(attributes);
 		this.signatures.add(sigma);
@@ -70,9 +69,7 @@ public class Credentials {
 		for (int index = L - 1; index > 0; index--) {
 			Groth groth = new Groth(null, index % 2 == 1, grothYs[index % 2]);
 			try {
-				groth.Verify(this.publicKeys.get(index - 1), this.signatures.get(index),
-						Stream.of(new Object[] { this.publicKeys.get(index) }, this.attributes.get(index))
-								.flatMap(Stream::of).toArray());
+				groth.Verify(this.publicKeys.get(index - 1), this.signatures.get(index), Stream.of(new Object[] { this.publicKeys.get(index) }, this.attributes.get(index)).flatMap(Stream::of).toArray());
 			} catch (Exception e) {
 				throw new Exception("verification failed for L = " + index);
 			}
@@ -83,8 +80,7 @@ public class Credentials {
 		}
 	}
 
-	public Proof Prove(RAND prg, BIG sk, Object pk, Index[] D, byte[] m, Object[][] grothYs, ECP h, BIG skNym)
-			throws Exception {
+	public Proof Prove(RAND prg, BIG sk, Object pk, Index[] D, byte[] m, Object[][] grothYs, ECP h, BIG skNym) throws Exception {
 
 		Proof proof = new Proof();
 

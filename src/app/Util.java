@@ -425,8 +425,7 @@ public class Util {
 		coms[i][j] = Util.eProduct(args);
 	}
 
-	public static BIG hashCommitments(Object[][] grothYs, Object pk, Object[] rPrime, FP12[][] coms, Object comNym,
-			Index[] D, byte[] m, BIG q) {
+	public static BIG hashCommitments(Object[][] grothYs, Object pk, Object[] rPrime, FP12[][] coms, Object comNym, Index[] D, byte[] m, BIG q) {
 		ByteArrayOutputStream raw = new ByteArrayOutputStream();
 
 		try {

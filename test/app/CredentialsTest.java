@@ -82,9 +82,7 @@ public class CredentialsTest {
 
 		Chain chain = generateChain(L, 3);
 
-		chain.creds.Prove(prg, chain.keys.sk, chain.keys.pk,
-				new Index[] { new Index(1, 1, chain.creds.attributes.get(1)[1]) }, "Message".getBytes(), chain.ys,
-				chain.h, chain.skNym);
+		chain.creds.Prove(prg, chain.keys.sk, chain.keys.pk, new Index[] { new Index(1, 1, chain.creds.attributes.get(1)[1]) }, "Message".getBytes(), chain.ys, chain.h, chain.skNym);
 	}
 
 	@Test(expected = Test.None.class)

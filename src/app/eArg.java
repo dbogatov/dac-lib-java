@@ -6,7 +6,7 @@ class eArg {
 	Object a;
 	Object b;
 	BIG c;
-	
+
 	public eArg(Object a, Object b, BIG c) {
 		this.a = a;
 		this.b = b;

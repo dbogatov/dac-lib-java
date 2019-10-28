@@ -100,8 +100,7 @@ public class Groth {
 		FP12 eRHS = PAIR.fexp(Util.ate2(this.g2, this.y[0], pk, this.g1));
 
 		if (!eLHS.equals(eRHS)) {
-			throw new Exception(
-					"verification failed for the first predicate (message independent, if many errors, this is the last)");
+			throw new Exception("verification failed for the first predicate (message independent, if many errors, this is the last)");
 		}
 
 		for (int index = 0; index < m.length; index++) {

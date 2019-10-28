@@ -19,8 +19,7 @@ public class GrothTest {
 
 		for (boolean first : new boolean[] { true, false }) {
 
-			Object[] grothMessage = new Object[] { Util.StringToECPb("hello", first), Util.StringToECPb("world", first),
-					Util.StringToECPb("!", first) };
+			Object[] grothMessage = new Object[] { Util.StringToECPb("hello", first), Util.StringToECPb("world", first), Util.StringToECPb("!", first) };
 
 			Groth groth = new Groth(prg, first, Groth.GenerateYs(first, 3, prg));
 
@@ -42,10 +41,8 @@ public class GrothTest {
 
 		for (boolean first : new boolean[] { true, false }) {
 
-			Object[] grothMessage = new Object[] { Util.StringToECPb("hello", first), Util.StringToECPb("world", first),
-					Util.StringToECPb("!", first) };
-			Object[] badMessage = new Object[] { Util.StringToECPb("hello", first), Util.StringToECPb("world", first),
-					Util.StringToECPb("?", first) };
+			Object[] grothMessage = new Object[] { Util.StringToECPb("hello", first), Util.StringToECPb("world", first), Util.StringToECPb("!", first) };
+			Object[] badMessage = new Object[] { Util.StringToECPb("hello", first), Util.StringToECPb("world", first), Util.StringToECPb("?", first) };
 
 			Groth groth = new Groth(prg, first, Groth.GenerateYs(first, 3, prg));
 
