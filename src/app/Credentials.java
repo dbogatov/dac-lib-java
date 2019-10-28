@@ -141,10 +141,8 @@ public class Credentials {
 		}
 
 		FP12[][] coms = new FP12[L + 1][];
-		int total = 0;
 		for (int i = 1; i <= L; i++) {
 			coms[i] = new FP12[n[i] + 2];
-			total += n[i] + 2;
 		}
 
 		// line 9 / 20
@@ -167,7 +165,7 @@ public class Credentials {
 			if (i != 1) {
 				e2com1 = new eArg(g1Neg, g2, rhoCpk[i - 1]);
 			}
-			eProductParallel(i, n[i], coms, e1com1, e2com1);
+			Util.eProductParallel(i, n[i], coms, e1com1, e2com1);
 
 			// line 11 / 22
 			BIG rhoSigmaT = BIG.modmul(rhoSigma[i], rhoT[i][0], q);
@@ -177,7 +175,7 @@ public class Credentials {
 			if (i != 1) {
 				e3com2 = new eArg(Util.pointNegate(grothYs[i % 2][0]), g2, rhoCpk[i - 1]);
 			}
-			eProductParallel(i, n[i] + 1, coms, e1com2, e2com2, e3com2);
+			Util.eProductParallel(i, n[i] + 1, coms, e1com2, e2com2, e3com2);
 
 			// line 12 / 23
 			for (int j = 0; j < n[i]; j++) {
@@ -195,14 +193,14 @@ public class Credentials {
 					// line 16 / 27
 					e3com = new eArg(g1, g2Neg, rhoA[i][j]);
 				}
-				eProductParallel(i, j, coms, e1com, e2com, e3com);
+				Util.eProductParallel(i, j, coms, e1com, e2com, e3com);
 			}
 		}
 
 		Object comNym = Util.productOfExponents(ECP.generator(), rhoCpk[L], h, rhoNym);
 
 		// line 31
-		proof.c = hashCommitments(grothYs, pk, proof.rPrime, coms, comNym, D, m, q);
+		proof.c = Util.hashCommitments(grothYs, pk, proof.rPrime, coms, comNym, D, m, q);
 
 		// line 32 / 41
 		proof.resS = new Object[L + 1];
@@ -247,46 +245,8 @@ public class Credentials {
 					proof.resA[i][j] = Util.productOfExponents(g, rhoA[i][j], this.attributes.get(i)[j], proof.c);
 				}
 			}
-
 		}
 
 		return proof;
-	}
-
-	private BIG hashCommitments(Object[][] grothYs, Object pk, Object[] rPrime, FP12[][] coms, Object comNym, Index[] D,
-			byte[] m, BIG q) {
-		ByteArrayOutputStream raw = new ByteArrayOutputStream();
-
-		try {
-			for (int i = 0; i < grothYs.length; i++) {
-				for (int j = 0; j < grothYs[i % 2].length; j++) {
-					raw.write(Util.pointToBytes(grothYs[i % 2][j]));
-				}
-			}
-			raw.write(Util.pointToBytes(pk));
-			for (int i = 0; i < rPrime.length; i++) {
-				if (rPrime[i] != null) {
-					raw.write(Util.pointToBytes(rPrime[i]));
-				}
-			}
-			for (int i = 0; i < coms.length; i++) {
-				for (int j = 0; j < (coms[i] == null ? 0 : coms[i].length); j++) {
-					if (coms[i][j] != null) {
-						raw.write(Util.fpToBytes(coms[i][j]));
-					}
-				}
-			}
-			raw.write(Util.pointToBytes(comNym));
-			raw.write(Util.hashIndices(D));
-			raw.write(m);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return Util.sha3(q, raw.toByteArray());
-	}
-
-	private void eProductParallel(int i, int j, FP12[][] coms, eArg... args) {
-		coms[i][j] = Util.eProduct(args);
 	}
 }

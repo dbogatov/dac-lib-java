@@ -38,6 +38,9 @@ public class Util {
 		byte[] A = new byte[_BIGByteLength];
 		byte[] B = new byte[_BIGByteLength];
 
+		a.toBytes(A);
+		b.toBytes(B);
+
 		for (int index = 0; index < _BIGByteLength; index++) {
 			if (A[index] != B[index]) {
 				return false;
@@ -416,5 +419,42 @@ public class Util {
 		}
 
 		return raw.toByteArray();
+	}
+
+	public static void eProductParallel(int i, int j, FP12[][] coms, eArg... args) {
+		coms[i][j] = Util.eProduct(args);
+	}
+
+	public static BIG hashCommitments(Object[][] grothYs, Object pk, Object[] rPrime, FP12[][] coms, Object comNym,
+			Index[] D, byte[] m, BIG q) {
+		ByteArrayOutputStream raw = new ByteArrayOutputStream();
+
+		try {
+			for (int i = 0; i < grothYs.length; i++) {
+				for (int j = 0; j < grothYs[i % 2].length; j++) {
+					raw.write(Util.pointToBytes(grothYs[i % 2][j]));
+				}
+			}
+			raw.write(Util.pointToBytes(pk));
+			for (int i = 0; i < rPrime.length; i++) {
+				if (rPrime[i] != null) {
+					raw.write(Util.pointToBytes(rPrime[i]));
+				}
+			}
+			for (int i = 0; i < coms.length; i++) {
+				for (int j = 0; j < (coms[i] == null ? 0 : coms[i].length); j++) {
+					if (coms[i][j] != null) {
+						raw.write(Util.fpToBytes(coms[i][j]));
+					}
+				}
+			}
+			// raw.write(Util.pointToBytes(comNym)); // TODO implement pseudonyms
+			raw.write(Util.hashIndices(D));
+			raw.write(m);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return Util.sha3(q, raw.toByteArray());
 	}
 }

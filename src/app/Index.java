@@ -1,7 +1,5 @@
 package app;
 
-import org.apache.milagro.amcl.FP256BN.BIG;
-
 public class Index {
 	int i;
 	int j;
